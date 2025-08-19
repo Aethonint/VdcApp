@@ -4,7 +4,7 @@ import 'Screens/Splashscreens/splashscreen1.dart';
 // import 'Screens/Splashscreens/splashscreen2.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp());            //testing
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +15,6 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen1(),
-    );
+    ); 
   }
 }
