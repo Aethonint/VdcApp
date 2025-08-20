@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Reusable button widget
 class IncidentOptionButton extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
@@ -29,13 +28,10 @@ class IncidentOptionButton extends StatelessWidget {
           ),
           onPressed: onTap,
           child: Align(
-            alignment: Alignment.centerLeft, // left to right
+            alignment: Alignment.centerLeft,
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
         ),

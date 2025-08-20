@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class LastCheckCard extends StatelessWidget {
-  final String title;      // e.g. "Daily Defect Check"
-  final String subtitle;   // e.g. "TX-2048"
-  final String date;       // e.g. "20-04-25"
-  final VoidCallback? onPressed; // Action when status button clicked
+  final String title;
+  final String subtitle;
+  final String date;
+  final VoidCallback? onPressed;
 
   const LastCheckCard({
     super.key,
@@ -26,7 +26,6 @@ class LastCheckCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Left text section
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,7 +51,6 @@ class LastCheckCard extends StatelessWidget {
             ],
           ),
 
-          // Right date + button section
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -69,7 +67,10 @@ class LastCheckCard extends StatelessWidget {
               GestureDetector(
                 onTap: onPressed,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 1, 59, 107),
                     borderRadius: BorderRadius.circular(20),
@@ -77,11 +78,7 @@ class LastCheckCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: const [
-                      Icon(
-                        Icons.check,
-                        size: 12,
-                        color: Colors.white,
-                      ),
+                      Icon(Icons.check, size: 12, color: Colors.white),
                       SizedBox(width: 6),
                       Text(
                         "Cleared",

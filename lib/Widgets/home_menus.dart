@@ -14,13 +14,22 @@ class MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    
+    final buttonWidth = screenWidth * 0.4; 
+    final minButtonHeight = buttonWidth * 0.75; 
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        width: 220,
-        height: 170,
-        padding: const EdgeInsets.all(32),
+        width: buttonWidth,
+        constraints: BoxConstraints(
+          minHeight: minButtonHeight, 
+        ),
+        padding: EdgeInsets.all(buttonWidth * 0.12), 
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 1, 59, 107),
           borderRadius: BorderRadius.circular(16),
@@ -34,22 +43,26 @@ class MenuButton extends StatelessWidget {
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min, 
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: Colors.white,
-              size: 32,
+              size: buttonWidth * 0.18, 
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: buttonWidth * 0.07),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: buttonWidth * 0.08, 
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.center,
+              softWrap: true,
+              overflow: TextOverflow.visible, 
+              maxLines: 2,
             ),
           ],
         ),

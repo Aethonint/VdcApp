@@ -13,7 +13,6 @@ class Screen1 extends StatelessWidget {
       showBackButton: true,
 
       onNextPressed: () {
-        // Navigate to Screen2
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const Screen2()));

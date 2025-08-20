@@ -13,15 +13,15 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12), 
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20), 
         child: BottomNavigationBar(
           backgroundColor: const Color.fromARGB(255, 1, 59, 107),
           type: BottomNavigationBarType.fixed,
-          iconSize: 60,
-          selectedFontSize: 20,
-          unselectedFontSize: 20,
+          iconSize: 32, 
+          selectedFontSize: 14, 
+          unselectedFontSize: 13, 
           selectedItemColor: Colors.white,
           unselectedItemColor: const Color.fromARGB(179, 255, 255, 255),
           currentIndex: currentIndex,

@@ -3,12 +3,11 @@ import 'package:flutter/services.dart';
 
 class TopNavigationBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
-  final VoidCallback? onBackPressed; // Add this
-
+  final VoidCallback? onBackPressed;
   const TopNavigationBar({
     super.key,
     this.showBackButton = false,
-    this.onBackPressed, // Add this
+    this.onBackPressed,
   });
 
   @override

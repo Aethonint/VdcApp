@@ -9,20 +9,18 @@ class Screen4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StepScreenWidget(
-      stepNumber: 4, // First step
+      stepNumber: 4,
       titleText: 'Insert Photo of Front',
       showBackButton: true,
       showBottomBackButton: true,
 
       onNextPressed: () {
-        // Navigate to Screen2
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const Screen5()));
       },
 
       onBottomBackPressed: () {
-        
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const Screen3()));

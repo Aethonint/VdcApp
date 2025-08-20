@@ -17,7 +17,6 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // TODO: Add navigation logic here
   }
 
   @override
@@ -30,40 +29,39 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row for Icon + Text
                     Row(
                       children: const [
                         Icon(
                           Icons.directions_car,
                           color: Colors.black,
-                          size: 35,
+                          size: 28,
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 6),
                         Text(
                           "Daily Defect Check",
                           style: TextStyle(
-                            fontSize: 23,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
@@ -71,57 +69,56 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                       ],
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 25),
 
-                    // VRN Input Field
                     TextField(
                       controller: _vrnController,
-                      textAlign: TextAlign.center, // centers hint & user text
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
                         hintText: "Enter VRN ●",
                         hintStyle: const TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
+                          fontSize: 14,
                         ),
                         filled: true,
                         fillColor: Colors.yellow[700],
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 30,
-                          horizontal: 16,
+                          vertical: 18,
+                          horizontal: 12,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide.none,
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 120),
+                    const SizedBox(height: 60),
 
                     // Continue button
                     SizedBox(
                       width: double.infinity,
-                      height: 80,
+                      height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromRGBO(26, 60, 94, 1),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                         ),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const Screen1(), // your target screen
+                              builder: (context) => const Screen1(),
                             ),
                           );
                         },
-
                         child: const Text(
                           "Continue",
                           style: TextStyle(
+                            fontSize: 14,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -135,12 +132,6 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
           ),
         ),
       ),
-
-      //  Reusable Bottom Navigation
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onNavBarTap,
-      // ),
     );
   }
 }

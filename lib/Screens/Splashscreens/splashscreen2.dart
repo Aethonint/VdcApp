@@ -6,260 +6,267 @@ class SplashScreen2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromRGBO(26, 60, 94, 1),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 140, bottom: 200),
-                  child: Image.asset('assets/fleetlogo.png', height: 150),
-                ),
-                const Text(
-                  "Welcome back!",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.5,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Center(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: height * 0.1),
+                    child: Image.asset(
+                      'assets/fleetlogo.png',
+                      height: height * 0.18,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 5),
-                const Text(
-                  "Login to your account",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 50),
 
-                // PIN Text Field (kept intact)
-                Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: 280,
-                    child: Stack(
-                      clipBehavior: Clip.none,
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextField(
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.only(left: 60),
-                            hintText: "Please enter your PIN",
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF777777),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide.none,
-                            ),
+                        Text(
+                          "Welcome back!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.075,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: height * 0.01),
+                        Text(
+                          "Login to your account",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.035,
+                            fontWeight: FontWeight.w900,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: height * 0.04),
+
+                        SizedBox(
+                          width: width * 0.7,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              TextField(
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: EdgeInsets.only(
+                                    left: width * 0.15,
+                                  ),
+                                  hintText: "Please enter your PIN",
+                                  hintStyle: TextStyle(
+                                    fontSize: width * 0.035,
+                                    color: const Color(0xFF777777),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                left: -width * 0.05,
+                                top: -height * 0.006,
+                                child: Container(
+                                  width: width * 0.15,
+                                  height: width * 0.15,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      3,
+                                      108,
+                                      212,
+                                    ),
+                                    size: width * 0.06,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(
-                          left: -20,
-                          top: -5,
-                          child: Container(
-                            width: 60,
-                            height: 60,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 6,
-                                  offset: Offset(0, 2),
+                        SizedBox(height: height * 0.04),
+
+                        SizedBox(
+                          width: width * 0.4,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MainNavigation(initialIndex: 0),
                                 ),
-                              ],
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color.fromRGBO(
+                                26,
+                                60,
+                                94,
+                                1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: height * 0.018,
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.lock,
-                              color: Color.fromARGB(255, 3, 108, 212),
-                              size: 24,
+                            child: Text(
+                              "Log in",
+                              style: TextStyle(
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 3, 108, 212),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 50),
 
-                // Login Button
-                Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: 150,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const MainNavigation(initialIndex: 0),
-                            ),
-                          );
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color.fromRGBO(26, 60, 94, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: const Text(
-                        "Log in",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 3, 108, 212),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 250),
-
-                // Footer
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Container(
-                            width: 300,
-                            height: 280,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
+                  Padding(
+                    padding: EdgeInsets.only(bottom: height * 0.04),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Container(
+                                    width: width * 0.8,
+                                    height: height * 0.38,
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Need Help?",
+                                          style: TextStyle(
+                                            fontSize: width * 0.035,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(height: height * 0.01),
+                                        Text(
+                                          "For assistance or to request a demonstration, please contact us using the details below.",
+                                          style: TextStyle(
+                                            fontSize: width * 0.028,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        SizedBox(height: height * 0.02),
+                                        Text(
+                                          "Call Support",
+                                          style: TextStyle(
+                                            fontSize: width * 0.035,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          "0330 861 8338",
+                                          style: TextStyle(
+                                            fontSize: width * 0.04,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color(0xFF0061FE),
+                                          ),
+                                        ),
+                                        SizedBox(height: height * 0.02),
+                                        Text(
+                                          "Email Support",
+                                          style: TextStyle(
+                                            fontSize: width * 0.035,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          "support@aethon.digital",
+                                          style: TextStyle(
+                                            fontSize: width * 0.04,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color(0xFF0061FE),
+                                          ),
+                                        ),
+                                        SizedBox(height: height * 0.02),
+                                        GestureDetector(
+                                          onTap: Navigator.of(context).pop,
+                                          child: Text(
+                                            "Close",
+                                            style: TextStyle(
+                                              fontSize: width * 0.035,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color(0xFF0061FE),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            "Need help?",
+                            style: TextStyle(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Need Help?",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  "For assistance or to request a demonstration, please contact us using the details below.",
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 20),
-                                Column(
-                                  children: const [
-                                    Text(
-                                      "Call Support",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      "0330 861 8338",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF0061FE),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                Column(
-                                  children: const [
-                                    Text(
-                                      "Email Support",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      "support@aethon.digital",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF0061FE),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                GestureDetector(
-                                  onTap: Navigator.of(context).pop,
-                                  child: const Text(
-                                    "Close",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF0061FE),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              fontSize: width * 0.04,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: const Text(
-                    "Need help?",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: height * 0.005),
+                        Text(
+                          "© Copyright VCC App Ltd 2025",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: width * 0.03,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  "© Copyright VCC App Ltd 2025",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

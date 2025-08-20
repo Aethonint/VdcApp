@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../Screens/Home_page/Home_menu.dart';
 import '../Screens/Previous_checks_page/prev_checks.dart';
+import '../Screens/Settings_page/setting.dart';
 import '../Widgets/bottom_nav.dart';
 
-// Import the sub-pages so they can be part of the navigation routes
+
 import '../Screens/Home_page/daily_defect.dart';
 import '../Screens/Home_page/incident_report.dart';
 
-// A key to access the inner navigator
+
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 class MainNavigation extends StatefulWidget {
@@ -21,8 +22,14 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
+
   void _onNavBarTap(int index) {
-    // If the user taps the currently selected tab, pop to root
+    
     if (_selectedIndex == index) {
       _navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
@@ -39,7 +46,11 @@ class _MainNavigationState extends State<MainNavigation> {
             return HomeScreen(onViewAllTapped: () => _onNavBarTap(1));
           case 1:
             return PreviousChecksScreen(
-              onBackPressed: () => _onNavBarTap(0), // Go back to Home tab
+              onBackPressed: () => _onNavBarTap(0), 
+            );
+          case 3:
+            return SettingsScreen(
+              onBackPressed: () => _onNavBarTap(0), 
             );
           default:
             return Container();
@@ -52,7 +63,7 @@ class _MainNavigationState extends State<MainNavigation> {
     return Offstage(
       offstage: _selectedIndex != tabIndex,
       child: Navigator(
-        key: tabIndex == 0 ? _navigatorKey : null, // Only home tab has global key
+        key: tabIndex == 0 ? _navigatorKey : null,
         onGenerateRoute: (settings) {
           return MaterialPageRoute(
             builder: (context) => routeBuilders[settings.name]!(context),
@@ -70,6 +81,7 @@ class _MainNavigationState extends State<MainNavigation> {
         children: [
           _buildOffstageNavigator(0), // Home Tab
           _buildOffstageNavigator(1), // Previous Checks Tab
+          _buildOffstageNavigator(3), // Settings Tab (Index 3)
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(

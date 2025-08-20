@@ -3,7 +3,7 @@ import 'package:fleetedge/Widgets/top_backnav.dart';
 import 'package:fleetedge/Widgets/checks_card.dart';
 
 class PreviousChecksScreen extends StatelessWidget {
-  final VoidCallback? onBackPressed; // <-- pass this from MainNavigation
+  final VoidCallback? onBackPressed;
 
   const PreviousChecksScreen({super.key, this.onBackPressed});
 
@@ -62,8 +62,6 @@ class PreviousChecksScreen extends StatelessWidget {
                   subtitle: "TX-3052",
                   date: "18-04-25",
                 ),
-                
-              
               ],
             ),
           ),

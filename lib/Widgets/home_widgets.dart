@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 class StepScreenWidget extends StatelessWidget {
   final int stepNumber;
   final String titleText;
-  final bool showBackButton; // AppBar back button
-  final bool showBottomBackButton; // NEW: controls bottom back button
+  final bool showBackButton;
+  final bool showBottomBackButton;
   final VoidCallback? onNextPressed;
-  final VoidCallback? onBottomBackPressed; // NEW: bottom back button action
+  final VoidCallback? onBottomBackPressed;
 
   const StepScreenWidget({
     super.key,
     required this.stepNumber,
     required this.titleText,
     this.showBackButton = true,
-    this.showBottomBackButton = false, // default hidden
+    this.showBottomBackButton = false,
     this.onNextPressed,
     this.onBottomBackPressed,
   });
@@ -21,6 +21,11 @@ class StepScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const int totalSteps = 7;
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final scale = screenHeight / 800;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -31,232 +36,225 @@ class StepScreenWidget extends StatelessWidget {
         leadingWidth: 100,
         leading: showBackButton
             ? Padding(
-                padding: const EdgeInsets.only(left: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 12, bottom: 6),
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        padding: const EdgeInsets.all(4),
-                        child: const Icon(
+                        padding: const EdgeInsets.all(3),
+                        child: Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: 22,
+                          size: 18 * scale,
                         ),
                       ),
-                      const SizedBox(width: 6),
-                      const Text(
+                      const SizedBox(width: 4),
+                      Text(
                         "Back",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12 * scale,
+                        ),
                       ),
                     ],
                   ),
                 ),
               )
             : null,
-        actions: const [
-          Icon(Icons.notifications_none, color: Colors.white, size: 30),
-          SizedBox(width: 12),
+        actions: [
+          Icon(Icons.notifications_none, color: Colors.white, size: 22 * scale),
+          const SizedBox(width: 10),
         ],
       ),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 10 * scale),
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: 90,
-                top: 20,
-              ),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LinearProgressIndicator(
-                    value: stepNumber / totalSteps,
-                    backgroundColor: Colors.grey[300],
-                    color: Color.fromARGB(255, 9, 81, 139),
-                    minHeight: 6,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    "Step $stepNumber/$totalSteps",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+            SizedBox(height: 8 * scale),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 8 * scale,
+                  vertical: 8 * scale,
+                ),
+                padding: EdgeInsets.all(12 * scale),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LinearProgressIndicator(
+                      value: stepNumber / totalSteps,
+                      backgroundColor: Colors.grey[300],
+                      color: const Color.fromARGB(255, 9, 81, 139),
+                      minHeight: 4 * scale,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    titleText,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  const Center(
-                    child: Text(
-                      "Defective?",
+                    SizedBox(height: 8 * scale),
+                    Text(
+                      "Step $stepNumber/$totalSteps",
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 12 * scale,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 13),
-
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 40, 199, 74),
-                      minimumSize: const Size.fromHeight(50),
-                      textStyle: const TextStyle(fontSize: 16),
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      "Yes",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      minimumSize: const Size.fromHeight(50),
-                      textStyle: const TextStyle(fontSize: 16),
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      "No",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 35),
-
-                  Container(
-                    height: 300,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.camera_alt, size: 150),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.image_outlined,
-                        size: 20,
-                        color: Color.fromARGB(255, 9, 81, 139),
+                    SizedBox(height: 6 * scale),
+                    Text(
+                      titleText,
+                      style: TextStyle(
+                        fontSize: 16 * scale,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(width: 6),
-                      Text(
-                        "Image",
+                    ),
+                    SizedBox(height: 10 * scale),
+
+                    Center(
+                      child: Text(
+                        "Defective?",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 9, 81, 139),
-                          fontStyle: FontStyle.italic,
+                          fontSize: 16 * scale,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(width: 30),
-                      Icon(
-                        Icons.copy,
-                        size: 20,
-                        color: Color.fromARGB(255, 9, 81, 139),
+                    ),
+
+                    SizedBox(height: 8 * scale),
+
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 40, 199, 74),
+                        minimumSize: Size.fromHeight(40 * scale),
+                        textStyle: TextStyle(fontSize: 12 * scale),
                       ),
-                      SizedBox(width: 6),
-                      Text(
-                        "Notes",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 9, 81, 139),
-                          fontStyle: FontStyle.italic,
+                      onPressed: () {},
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(height: 8 * scale),
+
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: Size.fromHeight(40 * scale),
+                        textStyle: TextStyle(fontSize: 12 * scale),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        "No",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(height: 12 * scale),
+
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 90 * scale,
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 10 * scale),
 
-                  const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_outlined,
+                          size: 16 * scale,
+                          color: const Color.fromARGB(255, 9, 81, 139),
+                        ),
+                        SizedBox(width: 4 * scale),
+                        Text(
+                          "Image",
+                          style: TextStyle(
+                            fontSize: 12 * scale,
+                            color: const Color.fromARGB(255, 9, 81, 139),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(width: 12 * scale),
+                        Icon(
+                          Icons.copy,
+                          size: 16 * scale,
+                          color: const Color.fromARGB(255, 9, 81, 139),
+                        ),
+                        SizedBox(width: 4 * scale),
+                        Text(
+                          "Notes",
+                          style: TextStyle(
+                            fontSize: 12 * scale,
+                            color: const Color.fromARGB(255, 9, 81, 139),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10 * scale),
 
-                  // Bottom Back & Next buttons
-                  Center(
-                    child: Row(
+                    // Buttons always at bottom
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (showBottomBackButton)
                           ElevatedButton(
-                            style:
-                                ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 90,
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  textStyle: const TextStyle(fontSize: 16),
-                                  backgroundColor: const Color.fromARGB(
-                                    255,
-                                    1,
-                                    59,
-                                    107,
-                                  ),
-                                ).copyWith(
-                                  backgroundColor: WidgetStateProperty.all(
-                                    const Color.fromARGB(255, 1, 59, 107),
-                                  ),
-                                ),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 40 * scale,
+                                vertical: 12 * scale,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              textStyle: TextStyle(fontSize: 12 * scale),
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                1,
+                                59,
+                                107,
+                              ),
+                            ),
                             onPressed: onBottomBackPressed,
                             child: const Text(
                               "Back",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                        if (showBottomBackButton) const SizedBox(width: 20),
+                        if (showBottomBackButton) SizedBox(width: 10 * scale),
                         ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 80,
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                textStyle: const TextStyle(fontSize: 16),
-                                backgroundColor: const Color.fromARGB(
-                                  255,
-                                  1,
-                                  59,
-                                  107,
-                                ),
-                              ).copyWith(
-                                backgroundColor: WidgetStateProperty.all(
-                                  const Color.fromARGB(255, 1, 59, 107),
-                                ),
-                              ),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 40 * scale,
+                              vertical: 12 * scale,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: TextStyle(fontSize: 12 * scale),
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              1,
+                              59,
+                              107,
+                            ),
+                          ),
                           onPressed: onNextPressed,
                           child: const Text(
                             "Next",
@@ -265,47 +263,13 @@ class StepScreenWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
-
-      // bottomNavigationBar: Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-      //   child: ClipRRect(
-      //     borderRadius: BorderRadius.circular(24),
-      //     child: BottomNavigationBar(
-      //       backgroundColor: const Color.fromARGB(255, 1, 59, 107),
-      //       type: BottomNavigationBarType.fixed,
-      //       iconSize: 60,
-      //       selectedFontSize: 20,
-      //       unselectedFontSize: 20,
-      //       selectedItemColor: Colors.white,
-      //       unselectedItemColor: const Color.fromARGB(179, 255, 255, 255),
-      //       items: const [
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.home_outlined),
-      //           label: 'Home',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.checklist_outlined),
-      //           label: 'Previous checks',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.description),
-      //           label: 'Ancillary',
-      //         ),
-      //         BottomNavigationBarItem(
-      //           icon: Icon(Icons.settings_outlined),
-      //           label: 'Settings',
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

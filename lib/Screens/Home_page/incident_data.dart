@@ -64,7 +64,6 @@ class _IncidentScreenState extends State<IncidentScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // TODO: handle navigation logic
   }
 
   @override
@@ -305,11 +304,6 @@ class _IncidentScreenState extends State<IncidentScreen> {
           ),
         ],
       ),
-
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onNavBarTap,
-      // ),
     );
   }
 }
