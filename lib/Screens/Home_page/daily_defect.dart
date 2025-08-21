@@ -1,6 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:fleetedge/widgets/top_backnav.dart';
 import 'screen1.dart';
+
+// ✅ Correct imports for global data
+import 'package:fleetedge/API/user_data.dart';     // for loggedInUserToken
+import 'package:fleetedge/API/vehicle_data.dart'; // for globalVehicleNo & globalAssignmentId
 
 class DailyDefectCheckScreen extends StatefulWidget {
   const DailyDefectCheckScreen({super.key});
@@ -12,6 +19,13 @@ class DailyDefectCheckScreen extends StatefulWidget {
 class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
   int _selectedIndex = 0;
   final TextEditingController _vrnController = TextEditingController();
+  bool _vehicleFetched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAssignedVehicle();
+  }
 
   void _onNavBarTap(int index) {
     setState(() {
@@ -19,12 +33,47 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
     });
   }
 
+  Future<void> _fetchAssignedVehicle() async {
+    final url = Uri.parse("https://vdc.freetoolsclub.com/api/driver/assignment");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $loggedInUserToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+
+        if (body["status"] == true && body["data"] != null) {
+          final data = body["data"];
+          final vehicle = data["vehicle"];
+
+          setState(() {
+            _vrnController.text = vehicle["vehicle_no"];
+            _vehicleFetched = true;
+          });
+
+          // ✅ Save globally
+          globalVehicleNo = vehicle["vehicle_no"];
+          globalAssignmentId = data["assignment_id"];
+        }
+      } else {
+        debugPrint("Failed to fetch vehicle: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Error fetching vehicle: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // Reusable Top Navigation
       appBar: const TopNavigationBar(showBackButton: true),
 
       body: SafeArea(
@@ -73,11 +122,19 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
 
                     TextField(
                       controller: _vrnController,
+                      enabled: false, // user cannot edit
                       textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: _vehicleFetched ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                       decoration: InputDecoration(
-                        hintText: "Enter VRN ●",
-                        hintStyle: const TextStyle(
-                          color: Colors.red,
+                        hintText: _vehicleFetched
+                            ? "Vehicle Assigned"
+                            : "Enter VRN ●",
+                        hintStyle: TextStyle(
+                          color: _vehicleFetched ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -108,12 +165,30 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Screen1(),
-                            ),
-                          );
+                          if (_vehicleFetched) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Screen1(),
+                              ),
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text("No Vehicle Assigned"),
+                                content: const Text(
+                                  "You do not have any vehicle assigned yet.",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           "Continue",
