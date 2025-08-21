@@ -1,13 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:fleetedge/widgets/top_backnav.dart';
 import 'screen1.dart';
-
-// ✅ Correct imports for global data
-import 'package:fleetedge/API/user_data.dart';     // for loggedInUserToken
-import 'package:fleetedge/API/vehicle_data.dart'; // for globalVehicleNo & globalAssignmentId
+import 'package:fleetedge/API/user_data.dart';
+import 'package:fleetedge/API/vehicle_data.dart';
 
 class DailyDefectCheckScreen extends StatefulWidget {
   const DailyDefectCheckScreen({super.key});
@@ -20,7 +17,7 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
   int _selectedIndex = 0;
   final TextEditingController _vrnController = TextEditingController();
   bool _vehicleFetched = false;
-
+  bool _isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -34,7 +31,9 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
   }
 
   Future<void> _fetchAssignedVehicle() async {
-    final url = Uri.parse("https://vdc.freetoolsclub.com/api/driver/assignment");
+    final url = Uri.parse(
+      "https://vdc.freetoolsclub.com/api/driver/assignment",
+    );
 
     try {
       final response = await http.get(
@@ -55,17 +54,27 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
           setState(() {
             _vrnController.text = vehicle["vehicle_no"];
             _vehicleFetched = true;
+            _isLoading = false;
           });
 
-          // ✅ Save globally
           globalVehicleNo = vehicle["vehicle_no"];
           globalAssignmentId = data["assignment_id"];
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
         }
       } else {
         debugPrint("Failed to fetch vehicle: ${response.statusCode}");
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (e) {
       debugPrint("Error fetching vehicle: $e");
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -73,9 +82,7 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: const TopNavigationBar(showBackButton: true),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
@@ -117,43 +124,76 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 25),
 
-                    TextField(
-                      controller: _vrnController,
-                      enabled: false, // user cannot edit
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: _vehicleFetched ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: _vehicleFetched
-                            ? "Vehicle Assigned"
-                            : "Enter VRN ●",
-                        hintStyle: TextStyle(
-                          color: _vehicleFetched ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        TextField(
+                          controller: _vrnController,
+                          enabled: false,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: _vehicleFetched
+                                ? const Color.fromARGB(255, 3, 3, 3)
+                                : Colors.red,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: _vehicleFetched
+                                ? "Vehicle Assigned"
+                                : _isLoading
+                                ? ""
+                                : "No Vehicle Assigned",
+                            hintStyle: TextStyle(
+                              color: _vehicleFetched
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                            filled: true,
+                            fillColor: Colors.yellow[700],
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 18,
+                              horizontal: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(14),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
-                        filled: true,
-                        fillColor: Colors.yellow[700],
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 18,
-                          horizontal: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
+                        if (_isLoading)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.blue,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Checking Assigned vehicle",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
 
                     const SizedBox(height: 60),
 
-                    // Continue button
                     SizedBox(
                       width: double.infinity,
                       height: 50,

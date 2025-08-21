@@ -75,129 +75,130 @@ class SettingsScreen extends StatelessWidget {
         showBackButton: true,
         onBackPressed: onBackPressed,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF01355F).withOpacity(0.1),
-                    shape: BoxShape.circle,
+      body: SingleChildScrollView( 
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF01355F).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: const Icon(
+                      Icons.account_circle,
+                      size: 50,
+                      color: Color(0xFF01355F),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(16),
-                  child: const Icon(
-                    Icons.account_circle,
-                    size: 50,
-                    color: Color(0xFF01355F),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        firstName,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          firstName,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        email,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black54,
+                        const SizedBox(height: 4),
+                        Text(
+                          email,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black54,
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF01355F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF01355F),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
+                    onPressed: () {},
+                    child: const Text(
+                      "Edit Profile",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  onPressed: () {
-                    
-                  },
-                  child: const Text(
-                    "Edit Profile",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
+                ],
+              ),
+              const SizedBox(height: 30),
 
-            _sectionTitle("Notifications"),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: true,
-              onChanged: (val) {},
-              activeColor: const Color(0xFF01355F), 
-              title: const Text("Push Notifications"),
-            ),
-            const SizedBox(height: 24),
+              _sectionTitle("Notifications"),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                value: true,
+                onChanged: (val) {},
+                activeColor: const Color(0xFF01355F),
+                title: const Text("Push Notifications"),
+              ),
+              const SizedBox(height: 24),
 
-            _sectionTitle("Support & Information"),
-            const SizedBox(height: 12),
-            _settingsTile(
-              icon: Icons.help_outline,
-              label: "Help & Support",
-              onTap: () {},
-            ),
-            _settingsTile(
-              icon: Icons.shield_outlined,
-              label: "Privacy Policy",
-              onTap: () {},
-            ),
-            _settingsTile(
-              icon: Icons.description_outlined,
-              label: "Terms & Conditions",
-              onTap: () {},
-            ),
-            _settingsTile(
-              icon: Icons.info_outline,
-              label: "About FleetEdge",
-              onTap: () {},
-            ),
+              _sectionTitle("Support & Information"),
+              const SizedBox(height: 12),
+              _settingsTile(
+                icon: Icons.help_outline,
+                label: "Help & Support",
+                onTap: () {},
+              ),
+              _settingsTile(
+                icon: Icons.shield_outlined,
+                label: "Privacy Policy",
+                onTap: () {},
+              ),
+              _settingsTile(
+                icon: Icons.description_outlined,
+                label: "Terms & Conditions",
+                onTap: () {},
+              ),
+              _settingsTile(
+                icon: Icons.info_outline,
+                label: "About FleetEdge",
+                onTap: () {},
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            Center(
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF01355F),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              Center(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF01355F),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  onPressed: () => _logout(context),
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  label: const Text(
-                    "Logout",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    onPressed: () => _logout(context),
+                    icon: const Icon(Icons.logout, color: Colors.white),
+                    label: const Text(
+                      "Logout",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16), 
+            ],
+          ),
         ),
       ),
     );

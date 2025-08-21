@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class StepScreenWidget extends StatelessWidget {
+class StepScreenWidget extends StatefulWidget {
   final int stepNumber;
   final String titleText;
   final bool showBackButton;
@@ -19,12 +21,222 @@ class StepScreenWidget extends StatelessWidget {
   });
 
   @override
+  State<StepScreenWidget> createState() => _StepScreenWidgetState();
+}
+
+class _StepScreenWidgetState extends State<StepScreenWidget> {
+  bool? isDefective; // null = not selected, true = Yes, false = No
+  final ImagePicker _picker = ImagePicker();
+  String? _notesText;
+  XFile? _capturedImage;
+
+  final Color primaryBlue = const Color.fromARGB(255, 1, 59, 107);
+
+  // Ensure image persists if widget rebuilds
+  @override
+  void didUpdateWidget(covariant StepScreenWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // nothing needed here as _capturedImage is kept in State
+  }
+
+  Future<void> _openCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _capturedImage = pickedFile;
+      });
+      _showCustomDialog("Success", "Image captured successfully", true);
+    }
+  }
+
+  void _handleNotesClick() {
+    if (isDefective == null) {
+      _showCustomDialog(
+        "Action Required",
+        "Please select 'Yes' or 'No' first.",
+        false,
+      );
+      return;
+    }
+
+    if (isDefective == true) {
+      // Show notes dialog as before
+      showDialog(
+        context: context,
+        builder: (context) {
+          final TextEditingController controller = TextEditingController(
+            text: _notesText,
+          );
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 24,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Add Notes",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: primaryBlue,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: controller,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText: "Write your notes here...",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primaryBlue, width: 1.5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: primaryBlue, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _notesText = controller.text;
+                          });
+                          Navigator.pop(context);
+                          _showCustomDialog(
+                            "Success",
+                            "Notes saved successfully",
+                            true,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryBlue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Save",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // Show alert if No defect
+      _showCustomDialog(
+        "No Notes Required",
+        "No defect selected, no notes needed.",
+        false,
+      );
+    }
+  }
+
+  void _validateAndProceed() {
+    if (_capturedImage == null) {
+      _showCustomDialog(
+        "Image Required",
+        "Please capture an image before proceeding.",
+        false,
+      );
+      return;
+    }
+
+    if (isDefective == true && (_notesText == null || _notesText!.isEmpty)) {
+      _showCustomDialog(
+        "Notes Required",
+        "Please add notes for defective item.",
+        false,
+      );
+      return;
+    }
+
+    if (widget.onNextPressed != null) widget.onNextPressed!();
+  }
+
+  void _showCustomDialog(String title, String message, bool success) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                success ? Icons.check_circle : Icons.info_outline,
+                color: success ? Colors.green : primaryBlue,
+                size: 50,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: primaryBlue,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text("OK", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     const int totalSteps = 7;
-
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     final scale = screenHeight / 800;
 
     return Scaffold(
@@ -34,7 +246,7 @@ class StepScreenWidget extends StatelessWidget {
         elevation: 0,
         backgroundColor: const Color.fromARGB(255, 1, 53, 95),
         leadingWidth: 100,
-        leading: showBackButton
+        leading: widget.showBackButton
             ? Padding(
                 padding: const EdgeInsets.only(left: 12, bottom: 6),
                 child: GestureDetector(
@@ -71,7 +283,6 @@ class StepScreenWidget extends StatelessWidget {
           const SizedBox(width: 10),
         ],
       ),
-
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10 * scale),
         child: Column(
@@ -93,14 +304,14 @@ class StepScreenWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     LinearProgressIndicator(
-                      value: stepNumber / totalSteps,
+                      value: widget.stepNumber / totalSteps,
                       backgroundColor: Colors.grey[300],
                       color: const Color.fromARGB(255, 9, 81, 139),
                       minHeight: 4 * scale,
                     ),
                     SizedBox(height: 8 * scale),
                     Text(
-                      "Step $stepNumber/$totalSteps",
+                      "Step ${widget.stepNumber}/$totalSteps",
                       style: TextStyle(
                         fontSize: 12 * scale,
                         fontWeight: FontWeight.w500,
@@ -108,7 +319,7 @@ class StepScreenWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 6 * scale),
                     Text(
-                      titleText,
+                      widget.titleText,
                       style: TextStyle(
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.bold,
@@ -125,7 +336,6 @@ class StepScreenWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 8 * scale),
 
                     ElevatedButton(
@@ -134,10 +344,28 @@ class StepScreenWidget extends StatelessWidget {
                         minimumSize: Size.fromHeight(40 * scale),
                         textStyle: TextStyle(fontSize: 12 * scale),
                       ),
-                      onPressed: () {},
-                      child: const Text(
-                        "Yes",
-                        style: TextStyle(color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          isDefective = true;
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Yes",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          if (isDefective == true)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     SizedBox(height: 8 * scale),
@@ -148,26 +376,56 @@ class StepScreenWidget extends StatelessWidget {
                         minimumSize: Size.fromHeight(40 * scale),
                         textStyle: TextStyle(fontSize: 12 * scale),
                       ),
-                      onPressed: () {},
-                      child: const Text(
-                        "No",
-                        style: TextStyle(color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          isDefective = false;
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "No",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          if (isDefective == false)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     SizedBox(height: 12 * scale),
 
                     Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.camera_alt,
-                            size: 90 * scale,
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                      child: GestureDetector(
+                        onTap: _openCamera,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          child: _capturedImage == null
+                              ? Center(
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    size: 90 * scale,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    File(_capturedImage!.path),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -179,41 +437,42 @@ class StepScreenWidget extends StatelessWidget {
                         Icon(
                           Icons.image_outlined,
                           size: 16 * scale,
-                          color: const Color.fromARGB(255, 9, 81, 139),
+                          color: primaryBlue,
                         ),
                         SizedBox(width: 4 * scale),
-                        Text(
-                          "Image",
-                          style: TextStyle(
-                            fontSize: 12 * scale,
-                            color: const Color.fromARGB(255, 9, 81, 139),
-                            fontStyle: FontStyle.italic,
+                        GestureDetector(
+                          onTap: _openCamera,
+                          child: Text(
+                            "Image",
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: primaryBlue,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
                         SizedBox(width: 12 * scale),
-                        Icon(
-                          Icons.copy,
-                          size: 16 * scale,
-                          color: const Color.fromARGB(255, 9, 81, 139),
-                        ),
+                        Icon(Icons.copy, size: 16 * scale, color: primaryBlue),
                         SizedBox(width: 4 * scale),
-                        Text(
-                          "Notes",
-                          style: TextStyle(
-                            fontSize: 12 * scale,
-                            color: const Color.fromARGB(255, 9, 81, 139),
-                            fontStyle: FontStyle.italic,
+                        GestureDetector(
+                          onTap: _handleNotesClick,
+                          child: Text(
+                            "Notes",
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              color: primaryBlue,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: 10 * scale),
 
-                    // Buttons always at bottom
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (showBottomBackButton)
+                        if (widget.showBottomBackButton)
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(
@@ -224,20 +483,16 @@ class StepScreenWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               textStyle: TextStyle(fontSize: 12 * scale),
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                1,
-                                59,
-                                107,
-                              ),
+                              backgroundColor: primaryBlue,
                             ),
-                            onPressed: onBottomBackPressed,
+                            onPressed: widget.onBottomBackPressed,
                             child: const Text(
                               "Back",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
-                        if (showBottomBackButton) SizedBox(width: 10 * scale),
+                        if (widget.showBottomBackButton)
+                          SizedBox(width: 10 * scale),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(
@@ -248,14 +503,9 @@ class StepScreenWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             textStyle: TextStyle(fontSize: 12 * scale),
-                            backgroundColor: const Color.fromARGB(
-                              255,
-                              1,
-                              59,
-                              107,
-                            ),
+                            backgroundColor: primaryBlue,
                           ),
-                          onPressed: onNextPressed,
+                          onPressed: _validateAndProceed,
                           child: const Text(
                             "Next",
                             style: TextStyle(color: Colors.white),
