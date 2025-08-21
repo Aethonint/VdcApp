@@ -23,7 +23,6 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Reusable Top Navigation Bar
                 TopNavBar(title: "FleetEdge", onNotificationTap: () {}),
 
                 SizedBox(height: height * 0.025),

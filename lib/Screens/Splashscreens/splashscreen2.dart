@@ -1,8 +1,82 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '/Routings/main_nav.dart';
+import '/API/user_data.dart' as userData;
 
-class SplashScreen2 extends StatelessWidget {
+class SplashScreen2 extends StatefulWidget {
   const SplashScreen2({super.key});
+
+  @override
+  State<SplashScreen2> createState() => _SplashScreen2State();
+}
+
+class _SplashScreen2State extends State<SplashScreen2> {
+  final TextEditingController _pinController = TextEditingController();
+  bool _isLoading = false;
+  bool _obscurePin = true; 
+
+  Future<void> _login() async {
+    final pinText = _pinController.text.trim();
+    if (pinText.isEmpty) {
+      _showDialog("Please enter your PIN");
+      return;
+    }
+
+    int? pin = int.tryParse(pinText);
+    if (pin == null) {
+      _showDialog("PIN must be a number");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await http.post(
+        Uri.parse("https://vdc.freetoolsclub.com/api/driver/login"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'id': pin}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['user'] != null) {
+        userData.loggedInUserId = data['user']['id'];
+        userData.loggedInUserName = data['user']['name'];
+        userData.loggedInUserEmail = data['user']['email'];
+        userData.loggedInUserToken = data['token'];
+
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const MainNavigation(initialIndex: 0),
+          ),
+          (route) => false,
+        );
+      } else {
+        _showDialog("Check your PIN");
+      }
+    } catch (e) {
+      _showDialog("Something went wrong. Please try again.");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Alert"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK",style:TextStyle(color:Color(0xFF01355F),) ,),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +100,6 @@ class SplashScreen2 extends StatelessWidget {
                       height: height * 0.18,
                     ),
                   ),
-
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -52,14 +125,15 @@ class SplashScreen2 extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: height * 0.04),
-
                         SizedBox(
                           width: width * 0.7,
                           child: Stack(
                             clipBehavior: Clip.none,
                             children: [
                               TextField(
-                                obscureText: true,
+                                controller: _pinController,
+                                obscureText: _obscurePin, 
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: Colors.white,
@@ -74,6 +148,24 @@ class SplashScreen2 extends StatelessWidget {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25),
                                     borderSide: BorderSide.none,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePin
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color:  const Color.fromARGB(
+                                      255,
+                                      3,
+                                      108,
+                                      212,
+                                    ),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePin = !_obscurePin;
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
@@ -110,19 +202,10 @@ class SplashScreen2 extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: height * 0.04),
-
                         SizedBox(
                           width: width * 0.4,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MainNavigation(initialIndex: 0),
-                                ),
-                              );
-                            },
+                            onPressed: _isLoading ? null : _login,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: const Color.fromRGBO(
@@ -138,14 +221,28 @@ class SplashScreen2 extends StatelessWidget {
                                 vertical: height * 0.018,
                               ),
                             ),
-                            child: Text(
-                              "Log in",
-                              style: TextStyle(
-                                fontSize: width * 0.04,
-                                fontWeight: FontWeight.bold,
-                                color: const Color.fromARGB(255, 3, 108, 212),
-                              ),
-                            ),
+                            child: _isLoading
+                                ? SizedBox(
+                                    height: width * 0.04,
+                                    width: width * 0.04,
+                                    child: const CircularProgressIndicator(
+                                      color: Color.fromARGB(255, 3, 108, 212),
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(
+                                    "Log in",
+                                    style: TextStyle(
+                                      fontSize: width * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color.fromARGB(
+                                        255,
+                                        3,
+                                        108,
+                                        212,
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -165,77 +262,80 @@ class SplashScreen2 extends StatelessWidget {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: Container(
-                                    width: width * 0.8,
-                                    height: height * 0.38,
-                                    padding: const EdgeInsets.all(16),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Need Help?",
-                                          style: TextStyle(
-                                            fontSize: width * 0.035,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(height: height * 0.01),
-                                        Text(
-                                          "For assistance or to request a demonstration, please contact us using the details below.",
-                                          style: TextStyle(
-                                            fontSize: width * 0.028,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        SizedBox(height: height * 0.02),
-                                        Text(
-                                          "Call Support",
-                                          style: TextStyle(
-                                            fontSize: width * 0.035,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          "0330 861 8338",
-                                          style: TextStyle(
-                                            fontSize: width * 0.04,
-                                            fontWeight: FontWeight.w500,
-                                            color: const Color(0xFF0061FE),
-                                          ),
-                                        ),
-                                        SizedBox(height: height * 0.02),
-                                        Text(
-                                          "Email Support",
-                                          style: TextStyle(
-                                            fontSize: width * 0.035,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          "support@aethon.digital",
-                                          style: TextStyle(
-                                            fontSize: width * 0.04,
-                                            fontWeight: FontWeight.w500,
-                                            color: const Color(0xFF0061FE),
-                                          ),
-                                        ),
-                                        SizedBox(height: height * 0.02),
-                                        GestureDetector(
-                                          onTap: Navigator.of(context).pop,
-                                          child: Text(
-                                            "Close",
+                                  child: SingleChildScrollView(
+                                    // 👈 FIX WRAP CONTENT
+                                    child: Container(
+                                      width: width * 0.8,
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize
+                                            .min, // 👈 prevents forced height
+                                        children: [
+                                          Text(
+                                            "Need Help?",
                                             style: TextStyle(
                                               fontSize: width * 0.035,
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(height: height * 0.01),
+                                          Text(
+                                            "For assistance or to request a demonstration, please contact us using the details below.",
+                                            style: TextStyle(
+                                              fontSize: width * 0.028,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: height * 0.02),
+                                          Text(
+                                            "Call Support",
+                                            style: TextStyle(
+                                              fontSize: width * 0.035,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            "0330 861 8338",
+                                            style: TextStyle(
+                                              fontSize: width * 0.04,
+                                              fontWeight: FontWeight.w500,
                                               color: const Color(0xFF0061FE),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(height: height * 0.02),
+                                          Text(
+                                            "Email Support",
+                                            style: TextStyle(
+                                              fontSize: width * 0.035,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            "support@aethon.digital",
+                                            style: TextStyle(
+                                              fontSize: width * 0.04,
+                                              fontWeight: FontWeight.w500,
+                                              color: const Color(0xFF0061FE),
+                                            ),
+                                          ),
+                                          SizedBox(height: height * 0.02),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                Navigator.of(context).pop(),
+                                            child: Text(
+                                              "Close",
+                                              style: TextStyle(
+                                                fontSize: width * 0.035,
+                                                fontWeight: FontWeight.w600,
+                                                color: const Color(0xFF0061FE),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );

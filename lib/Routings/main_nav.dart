@@ -3,11 +3,8 @@ import '../Screens/Home_page/Home_menu.dart';
 import '../Screens/Previous_checks_page/prev_checks.dart';
 import '../Screens/Settings_page/setting.dart';
 import '../Widgets/bottom_nav.dart';
-
-
 import '../Screens/Home_page/daily_defect.dart';
 import '../Screens/Home_page/incident_report.dart';
-
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -29,7 +26,6 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   void _onNavBarTap(int index) {
-    
     if (_selectedIndex == index) {
       _navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
@@ -45,13 +41,9 @@ class _MainNavigationState extends State<MainNavigation> {
           case 0:
             return HomeScreen(onViewAllTapped: () => _onNavBarTap(1));
           case 1:
-            return PreviousChecksScreen(
-              onBackPressed: () => _onNavBarTap(0), 
-            );
+            return PreviousChecksScreen(onBackPressed: () => _onNavBarTap(0));
           case 3:
-            return SettingsScreen(
-              onBackPressed: () => _onNavBarTap(0), 
-            );
+            return SettingsScreen(onBackPressed: () => _onNavBarTap(0));
           default:
             return Container();
         }
