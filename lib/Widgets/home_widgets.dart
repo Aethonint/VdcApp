@@ -7,7 +7,7 @@ class StepScreenWidget extends StatefulWidget {
   final int stepNumber;
   final int? totalSteps;
   final String titleText;
-  
+
   final Function(int stepNumber, XFile?, String?, bool?)? onNextPressed;
 
   final XFile? initialImage;
@@ -53,7 +53,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     isDefective = widget.initialIsDefective;
   }
 
-  /// Opens the camera directly to capture an image.
   Future<void> _pickFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
@@ -63,7 +62,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     }
   }
 
-  /// Opens the gallery to pick an image.
   Future<void> _pickFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -73,7 +71,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     }
   }
 
-  /// Handles the "Notes" button click, showing a dialog for user input.
   void _handleNotesClick() {
     if (isDefective == null) {
       _showCustomDialog(
@@ -88,8 +85,9 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
       showDialog(
         context: context,
         builder: (context) {
-          final TextEditingController controller =
-              TextEditingController(text: _notesText);
+          final TextEditingController controller = TextEditingController(
+            text: _notesText,
+          );
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -175,7 +173,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     }
   }
 
-  /// Validates the current screen's state and calls the parent's callback.
   void _validateAndProceed() {
     if (_capturedImage == null) {
       _showCustomDialog(
@@ -205,11 +202,15 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     }
 
     if (widget.onNextPressed != null) {
-      widget.onNextPressed!(widget.stepNumber, _capturedImage, _notesText, isDefective);
+      widget.onNextPressed!(
+        widget.stepNumber,
+        _capturedImage,
+        _notesText,
+        isDefective,
+      );
     }
   }
 
-  /// Displays a custom dialog with a title and message.
   void _showCustomDialog(String title, String message, bool success) {
     showDialog(
       context: context,
@@ -263,15 +264,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
     );
   }
 
-  // A method to pass the current screen's state back.
-  void _onBackPressed() {
-    Navigator.pop(context, {
-      'image': _capturedImage,
-      'notes': _notesText,
-      'isDefective': isDefective,
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -288,7 +280,7 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
             ? Padding(
                 padding: const EdgeInsets.only(left: 12, bottom: 6),
                 child: GestureDetector(
-                  onTap: _onBackPressed,
+                  onTap: widget.onBottomBackPressed,
                   child: Row(
                     children: [
                       Container(
@@ -510,7 +502,6 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
                       ],
                     ),
                     SizedBox(height: 10 * scale),
-                    // Row for side-by-side buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -519,26 +510,34 @@ class _StepScreenWidgetState extends State<StepScreenWidget> {
                             width: buttonWidth,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 12 * scale),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 12 * scale,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 textStyle: TextStyle(fontSize: 12 * scale),
                                 backgroundColor: Colors.grey,
                               ),
-                              onPressed: _onBackPressed, // Use the new method
+                              onPressed: widget.onBottomBackPressed,
                               child: const Text(
                                 "Back",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
-                        SizedBox(width: widget.showBottomBackButton == true ? 10 * scale : 0),
+                        SizedBox(
+                          width: widget.showBottomBackButton == true
+                              ? 10 * scale
+                              : 0,
+                        ),
                         SizedBox(
                           width: buttonWidth,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 12 * scale),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12 * scale,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

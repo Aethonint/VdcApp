@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fleetedge/widgets/top_backnav.dart';
-import 'defect_screen1.dart';
+import 'package:fleetedge/Workflow/workflow_state_manager.dart';
 import 'package:fleetedge/API/user_data.dart';
 import 'package:fleetedge/API/vehicle_data.dart';
 
@@ -125,7 +125,6 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                       ],
                     ),
                     const SizedBox(height: 25),
-
                     Stack(
                       alignment: Alignment.center,
                       children: [
@@ -144,8 +143,8 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                             hintText: _vehicleFetched
                                 ? "Vehicle Assigned"
                                 : _isLoading
-                                ? ""
-                                : "No Vehicle Assigned",
+                                    ? ""
+                                    : "No Vehicle Assigned",
                             hintStyle: TextStyle(
                               color: _vehicleFetched
                                   ? Colors.green
@@ -191,9 +190,7 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                           ),
                       ],
                     ),
-
                     const SizedBox(height: 60),
-
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -209,7 +206,7 @@ class _DailyDefectCheckScreenState extends State<DailyDefectCheckScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Screen1(),
+                                builder: (context) => const WorkflowStateManager(), // Changed navigation here
                               ),
                             );
                           } else {
