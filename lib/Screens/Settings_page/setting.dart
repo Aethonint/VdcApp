@@ -39,7 +39,7 @@ class SettingsScreen extends StatelessWidget {
 
     try {
       final response = await http.post(
-        Uri.parse("https://vdc.freetoolsclub.com/api/driver/logout"),
+        Uri.parse("https://vdc1.snapchec.com/api/driver/logout"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${userData.loggedInUserToken ?? ""}',

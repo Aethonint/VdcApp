@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/Widgets/home_widgets.dart';
-import 'screen2.dart';
+import 'defect_screen2.dart';
 
 class Screen1 extends StatelessWidget {
   const Screen1({super.key});
@@ -12,7 +12,7 @@ class Screen1 extends StatelessWidget {
       titleText: 'Insert Mileage',
       showBackButton: true,
 
-      onNextPressed: () {
+      onNextPressed: (stepNumber, capturedImage, notesText, isDefective) {
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const Screen2()));

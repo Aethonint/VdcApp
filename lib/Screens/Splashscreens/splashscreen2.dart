@@ -33,7 +33,7 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
     try {
       final response = await http.post(
-        Uri.parse("https://vdc.freetoolsclub.com/api/driver/login"),
+        Uri.parse("https://vdc1.snapchec.com/api/driver/login"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'id': pin}),
       );

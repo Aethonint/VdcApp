@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '/Widgets/home_widgets.dart';
-import 'screen6.dart';
-import 'screen4.dart';
+import 'defect_screen6.dart';
+import 'defect_screen4.dart';
 
 class Screen5 extends StatelessWidget {
   const Screen5({super.key});
@@ -14,7 +14,7 @@ class Screen5 extends StatelessWidget {
       showBackButton: true,
       showBottomBackButton: true,
 
-      onNextPressed: () {
+      onNextPressed: (stepNumber, capturedImage, notesText, isDefective) {
         Navigator.of(
           context,
         ).push(MaterialPageRoute(builder: (context) => const Screen6()));

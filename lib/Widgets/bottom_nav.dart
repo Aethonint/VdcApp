@@ -33,7 +33,7 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.checklist_outlined),
-              label: 'Prev checks',
+              label: 'Previous checks',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.description),
